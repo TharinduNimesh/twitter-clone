@@ -22,6 +22,10 @@
     "applications": {
         "laravel": {
             "type": "php",
+            "processes": {
+                "max": 10,
+                "spare": 5
+            },
             "root": "/var/www/html/public/",
             "script": "index.php"
         }
