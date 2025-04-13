@@ -20,6 +20,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libpq-dev \
     libonig-dev \
+    nodejs \
+    npm \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
@@ -38,7 +40,14 @@ COPY . /var/www
 # Copy the existing application directory permissions to the working directory
 COPY --chown=www-data:www-data . /var/www
 
-# Change current user to www
+RUN composer install --prefer-dist --optimize-autoloader --no-interaction
+
+# Install Node.js dependencies
+RUN npm install && npm run build
+
+RUN php artisan migrate --force && php artisan optimize:clear && php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan optimize
+
+# Change current user to www-data
 USER www-data
 
 # Expose port 9000 and start php-fpm server
