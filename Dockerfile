@@ -8,11 +8,13 @@ RUN apt update && apt install -y \
     && docker-php-ext-enable redis
 
 RUN echo "opcache.enable=1" > /usr/local/etc/php/conf.d/custom.ini \
+    && echo "opcache.enable_cli=1" >> /usr/local/etc/php/conf.d/custom.ini \
     && echo "opcache.jit=tracing" >> /usr/local/etc/php/conf.d/custom.ini \
     && echo "opcache.jit_buffer_size=512M" >> /usr/local/etc/php/conf.d/custom.ini \
-    && echo "memory_limit=2048M" >> /usr/local/etc/php/conf.d/custom.ini \        
+    && echo "memory_limit=2048M" >> /usr/local/etc/php/conf.d/custom.ini \
     && echo "upload_max_filesize=64M" >> /usr/local/etc/php/conf.d/custom.ini \
     && echo "post_max_size=64M" >> /usr/local/etc/php/conf.d/custom.ini
+
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
